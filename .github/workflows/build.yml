@@ -12,11 +12,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Java 17
+      - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -24,14 +24,25 @@ jobs:
           channel: 'stable'
 
       - name: Generate Android project files
-        run: flutter create . --project-name majorette_checker --platforms android
+        run: |
+          rm -rf test
+          flutter create . --project-name majorette_checker --platforms android
 
       - name: Add Camera and Internet permissions
         run: |
-          sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET"\/>\n    <uses-permission android:name="android.permission.CAMERA"\/>\n    <application/' android/app/src/main/AndroidManifest.xml
+          python3 -c '
+          p = "android/app/src/main/AndroidManifest.xml"
+          s = open(p).read()
+          perms = "<uses-permission android:name=\"android.permission.INTERNET\"/>\n    <uses-permission android:name=\"android.permission.CAMERA\"/>\n    "
+          if "android.permission.CAMERA" not in s:
+              s = s.replace("<application", perms + "<application", 1)
+              open(p, "w").write(s)
+          '
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Install compatible dependencies
+        run: |
+          flutter pub add http image_picker shared_preferences
+          flutter pub get
 
       - name: Build Release APK
         run: flutter build apk --release

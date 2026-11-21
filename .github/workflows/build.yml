@@ -29,20 +29,15 @@ jobs:
           flutter create . --project-name majorette_checker --platforms android
 
       - name: Add Camera and Internet permissions
-        run: |
-          python3 -c '
-          p = "android/app/src/main/AndroidManifest.xml"
-          s = open(p).read()
-          perms = "<uses-permission android:name=\"android.permission.INTERNET\"/>\n    <uses-permission android:name=\"android.permission.CAMERA\"/>\n    "
-          if "android.permission.CAMERA" not in s:
-              s = s.replace("<application", perms + "<application", 1)
-              open(p, "w").write(s)
-          '
+        run: python3 -c 'p="android/app/src/main/AndroidManifest.xml"; s=open(p).read(); open(p,"w").write(s.replace("<application","<uses-permission android:name=\"android.permission.INTERNET\"/>\n    <uses-permission android:name=\"android.permission.CAMERA\"/>\n    <application",1))'
 
       - name: Install compatible dependencies
         run: |
           flutter pub add http image_picker shared_preferences
           flutter pub get
+
+      - name: Check Dart code
+        run: flutter analyze --no-fatal-infos
 
       - name: Build Release APK
         run: flutter build apk --release

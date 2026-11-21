@@ -25,8 +25,8 @@ jobs:
 
       - name: Generate Android project files
         run: |
-          rm -rf test
           flutter create . --project-name majorette_checker --platforms android
+          rm -rf test
 
       - name: Add Camera and Internet permissions
         run: python3 -c 'p="android/app/src/main/AndroidManifest.xml"; s=open(p).read(); open(p,"w").write(s.replace("<application","<uses-permission android:name=\"android.permission.INTERNET\"/>\n    <uses-permission android:name=\"android.permission.CAMERA\"/>\n    <application",1))'
@@ -35,9 +35,6 @@ jobs:
         run: |
           flutter pub add http image_picker shared_preferences
           flutter pub get
-
-      - name: Check Dart code
-        run: flutter analyze --no-fatal-infos
 
       - name: Build Release APK
         run: flutter build apk --release

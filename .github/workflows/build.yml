@@ -23,15 +23,16 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Generate Android project files
+      - name: Generate Android folder safely
         run: |
-          flutter create . --project-name majorette_checker --platforms android
-          rm -rf test
+          flutter create /tmp/temp_app --project-name majorette_checker --platforms android
+          rm -rf android
+          cp -r /tmp/temp_app/android .
 
       - name: Add Camera and Internet permissions
         run: python3 -c 'p="android/app/src/main/AndroidManifest.xml"; s=open(p).read(); open(p,"w").write(s.replace("<application","<uses-permission android:name=\"android.permission.INTERNET\"/>\n    <uses-permission android:name=\"android.permission.CAMERA\"/>\n    <application",1))'
 
-      - name: Install compatible dependencies
+      - name: Install dependencies
         run: |
           flutter pub add http image_picker shared_preferences
           flutter pub get

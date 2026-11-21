@@ -5,7 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(const MajoretteCheckerApp());
+void main() {
+  runApp(const MajoretteCheckerApp());
+}
 
 class MajoretteCheckerApp extends StatelessWidget {
   const MajoretteCheckerApp({super.key});
@@ -40,7 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _apiKey = '';
   File? _selectedImage;
-  String _resultText = 'ถ่ายรูปก้นไข่ / ขอบตลับ หรือพิมพ์รหัส BKxxxxxx เพื่อเช็กรุ่นรถในล็อต';
+  String _resultText =
+      'ถ่ายรูปก้นไข่ / ขอบตลับ หรือพิมพ์รหัส BKxxxxxx เพื่อเช็กรุ่นรถในล็อต';
   bool _isLoading = false;
   List> _history = [];
 
@@ -202,7 +205,8 @@ class _HomeScreenState extends State<HomeScreen> {
       final data = jsonDecode(response.body);
 
       if (response.statusCode != 200) {
-        final errMsg = data['error']?['message'] ?? 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+        final errMsg =
+            data['error']?['message'] ?? 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
         setState(() => _resultText = 'API Error: $errMsg');
         return;
       }
@@ -214,8 +218,9 @@ class _HomeScreenState extends State<HomeScreen> {
           .join('\n')
           .trim();
 
-      final finalOutput =
-          output.isEmpty ? 'ไม่พบข้อมูลของรหัสนี้ ลองพิมพ์รหัสเพิ่มในช่องด้านบน' : output;
+      final finalOutput = output.isEmpty
+          ? 'ไม่พบข้อมูลของรหัสนี้ ลองพิมพ์รหัสเพิ่มในช่องด้านบน'
+          : output;
 
       setState(() => _resultText = finalOutput);
 
@@ -257,7 +262,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Expanded(
                   child: FilledButton.icon(
-                    onPressed: _isLoading ? null : () => _pickImage(ImageSource.camera),
+                    onPressed:
+                        _isLoading ? null : () => _pickImage(ImageSource.camera),
                     icon: const Icon(Icons.camera_alt),
                     label: const Text('ถ่ายรูปไข่/ล้อ'),
                   ),
@@ -265,7 +271,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: _isLoading ? null : () => _pickImage(ImageSource.gallery),
+                    onPressed: _isLoading
+                        ? null
+                        : () => _pickImage(ImageSource.gallery),
                     icon: const Icon(Icons.photo_library),
                     label: const Text('เลือกรูป'),
                   ),
